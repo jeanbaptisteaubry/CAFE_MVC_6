@@ -27,5 +27,6 @@ switch($case){
         include "Controleur/Controleur_Accueil_Defaut.php";
         break;
     case "Catalogue":
+        include "Controleur/Controleur_Catalogue.php";
         break;
 }

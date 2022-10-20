@@ -13,7 +13,8 @@ switch ($action) {
         Vue_SInscrire($tableCentreDInteret);
         break;
     case "SeConnecter":
-
+        include "./Vue/Vue_Menu.php";
+        Vue_Menu();
 
         break;
     case "EnvoyerInscription":
