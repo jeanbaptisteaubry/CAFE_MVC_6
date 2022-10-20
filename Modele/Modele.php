@@ -86,3 +86,36 @@ and produit.id = :id ";
     $produit = $table[0];
     return $produit;
 }
+
+function Modele_Categorie_Selection_Tous($bdd)
+{
+    //Interrogation de la base de donnée
+    $reqBDD = $bdd->query('SELECT * FROM `categorie` ');
+    $tableCategorie = $reqBDD->fetchAll();
+    return $tableCategorie;
+}
+
+function Modele_Produit_MAJ($bdd, $idProduit, $nom, $description, $PUHT, $TxTVA, $idCategorie)
+{
+
+    $reqTxt = "
+        UPDATE `produit`
+        SET `nom`= :nom,
+            `description`=:description,
+            `PUHT`=:PUHT,
+            `TxTVA`=:TxTVA,
+            `idCategorie`=:idCategorie
+        WHERE id = :idProduit
+        "; //`idCategorie`=:idCategorie
+
+    $reqBDD = $bdd->prepare($reqTxt);
+
+    $etat = $reqBDD->execute(array(
+        'idProduit' => $idProduit,
+        'nom' => $nom,
+        'description' => $description,
+        'PUHT' => $PUHT,
+        'TxTVA' => $TxTVA,
+        'idCategorie' => $idCategorie,
+    ));
+}

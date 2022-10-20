@@ -15,8 +15,19 @@ switch ($action) {
         Vue_Menu();
         include "./Vue/Vue_AfficherProduit.php";
         $produit = Modele_Produit_Selection_ParId($bdd,  $_REQUEST["idProduit"]);
+        $tableCategorie = Modele_Categorie_Selection_Tous($bdd);
+        Vue_AfficherProduit($produit, $tableCategorie);
+        break;
+    case "MAJ_PRODUIT":
+        Modele_Produit_MAJ($bdd, $_REQUEST["idProduit"], $_REQUEST["nom"], $_REQUEST["description"], $_REQUEST["PUHT"],
+            $_REQUEST["TxTVA"], $_REQUEST["idCategorie"]);
 
-        Vue_AfficherProduit($produit);
+        include "./Vue/Vue_Menu.php";
+        Vue_Menu();
+        include "./Vue/Vue_AfficherProduit.php";
+        $produit = Modele_Produit_Selection_ParId($bdd,  $_REQUEST["idProduit"]);
+        $tableCategorie = Modele_Categorie_Selection_Tous($bdd);
+        Vue_AfficherProduit($produit, $tableCategorie);
         break;
         //case où on supprime une catégorie
         //case où on affiche une catégorie

@@ -1,7 +1,6 @@
 <?php
-function Vue_AfficherProduit($produit)
+function Vue_AfficherProduit($produit, $tableCategorie)
 {
-    $bdd = new PDO('mysql:host=127.0.0.1;dbname=cafe2;charset=utf8', 'root', '');
 
 //Création de la requête paramétrée
 
@@ -46,12 +45,6 @@ function Vue_AfficherProduit($produit)
       <td>$produit[nom_categorie]
       <select name='idCategorie'>";
 
-    $bdd = new PDO('mysql:host=127.0.0.1;dbname=cafe2;charset=utf8', 'root', '');
-
-    //Interrogation de la base de donnée
-    $reqBDD = $bdd->query('SELECT * FROM `categorie` ');
-    $tableCategorie = $reqBDD->fetchAll();
-
     foreach ($tableCategorie as $enregCategorie) {
         if($enregCategorie["id"] == $produit["idCategorie"] )
             echo "<option value='$enregCategorie[id]' selected>$enregCategorie[nom]</option>";
@@ -62,7 +55,9 @@ function Vue_AfficherProduit($produit)
     echo " </select>
       </td>
       </tr>
-          <tr>    <td> <button type='submit' name='action' value='MAJ_PRODUIT'>M.A.J</button></td></tr>
+          <tr>    <td> 
+          <input type='hidden' name='case' value='Catalogue'>
+          <button type='submit' name='action' value='MAJ_PRODUIT'>M.A.J</button></td></tr>
             
             </table>";
 }
