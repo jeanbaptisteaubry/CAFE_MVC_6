@@ -29,6 +29,13 @@ function Vue_ListeProduit($tableProduit)
                 <button type='submit' name='action' value='AfficherProduit'>Ouvrir</button>
             </form>
         </td>
+        <td>
+            <form>
+                <input type='hidden' name='case' value='Catalogue'>
+                <input type='hidden' name='idProduit' value='$enregProduit[id]'>
+                <button type='submit' name='action' value='SupprimerProduit'>Supprimer</button>
+            </form>
+        </td>
 
         "; // Pour chaque entrée, j'affiche la dénominiation dans un lien ouvrant la liste des informations de l'entreprise
             echo "<tr>";

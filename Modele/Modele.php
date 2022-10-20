@@ -119,3 +119,18 @@ function Modele_Produit_MAJ($bdd, $idProduit, $nom, $description, $PUHT, $TxTVA,
         'idCategorie' => $idCategorie,
     ));
 }
+
+function Modele_Produit_Supprimer($bdd, $idProduit)
+{
+
+//Génération d'une requête SQL
+    $reqTxt = "DELETE produit.* FROM produit where id = :id";
+
+//Préparation de la requête
+//=> Association d'une variable à chaque paramètre de la requête
+//Paramètre d'une requête ? champ changeant de valeur pour pas que la requête soit toujours identique
+    $reqBDD = $bdd->prepare($reqTxt);
+    $etat = $reqBDD->execute(array(
+        'id' => $idProduit,
+    ));
+}

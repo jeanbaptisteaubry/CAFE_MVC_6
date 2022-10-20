@@ -29,6 +29,15 @@ switch ($action) {
         $tableCategorie = Modele_Categorie_Selection_Tous($bdd);
         Vue_AfficherProduit($produit, $tableCategorie);
         break;
+    case "SupprimerProduit":
+        Modele_Produit_Supprimer($bdd, $_REQUEST["idProduit"]);
+
+        include "./Vue/Vue_Menu.php";
+        Vue_Menu();
+        $tableProduit = Modele_Produit_SelectTous($bdd); //Je transforme le résultat de la requête en tableau [Ligne][Colonne]
+        include "./Vue/Vue_ListeProduit.php";
+        Vue_ListeProduit($tableProduit);
+        break;
         //case où on supprime une catégorie
         //case où on affiche une catégorie
         //case où on met à jour une catégorie...
