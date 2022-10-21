@@ -41,6 +41,11 @@ switch ($action) {
         //case où on supprime une catégorie
         //case où on affiche une catégorie
         //case où on met à jour une catégorie...
-
+    case "AjouterProduit":
+        include "./Vue/Vue_Menu.php";
+        Vue_Menu();
+        include "./Vue/Vue_AjouterProduit.php";
+        Vue_AjouterProduit();
+        break;
 
 }

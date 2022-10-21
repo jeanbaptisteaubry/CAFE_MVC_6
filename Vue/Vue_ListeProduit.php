@@ -40,9 +40,21 @@ function Vue_ListeProduit($tableProduit)
         "; // Pour chaque entrée, j'affiche la dénominiation dans un lien ouvrant la liste des informations de l'entreprise
             echo "<tr>";
         }
-        echo "</table>";
+
 
     } else {
         echo " Pas encore d'enregistrement ";
     }
+
+    echo "
+        <tr>
+        
+            <td colspan='7' style='text-align: center'>
+                <form>
+                    <input type='hidden' name='case' value='Catalogue'>
+                    <button type='submit' name='action' value='AjouterProduit'>Ajouter un produit</button>
+                </form>
+             </td>
+        </tr> 
+</table>";
 }
