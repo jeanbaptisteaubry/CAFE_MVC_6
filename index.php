@@ -29,4 +29,7 @@ switch($case){
     case "Catalogue":
         include "Controleur/Controleur_Catalogue.php";
         break;
+    case "Categories":
+        include "Controleur/Controleur_Categories.php";
+        break;
 }

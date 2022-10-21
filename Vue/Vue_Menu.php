@@ -1,6 +1,8 @@
 <?php
 function Vue_Menu(){
     echo "
+<nav>
+
 
     <ul>
         <li>
@@ -11,11 +13,17 @@ function Vue_Menu(){
         </li>
         <li>
             <form>
+                <input type='hidden' name='case' value='Categories'>
+                <button type='submit' name='action' value='VoirListe'>Gérer les catégories</button>
+            </form> 
+        </li>
+        <li>
+            <form>
                 <input type='hidden' name='case' value='Salarie'>
                 <button type='submit' name='action' value='VoirListe'>Gérer les salariés</button>
             </form> 
         </li>
     </ul>
-  
+  </nav>
     ";
 }
