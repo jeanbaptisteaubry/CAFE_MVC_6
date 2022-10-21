@@ -1,5 +1,5 @@
 <?php
-function Vue_AjouterProduit()
+function Vue_AjouterProduit($tableCategorie)
 {
     echo "<html>
 <head>
@@ -9,7 +9,7 @@ function Vue_AjouterProduit()
 </head>
 <body>
 <H1>Ajout d'un produit</H1>
-<form action=\"ajoutProduit.php\" method=\"GET\">
+<form>
     Nom <input type=\"text\" name=\"Nom\"><br>
     Description <input type=\"text\" name=\"Description\"><br>
     PUHT <input type=\"number\"  name=\"PUHT\"><br>
@@ -22,11 +22,7 @@ function Vue_AjouterProduit()
     Catégorie
     <select name=\"idCategorie\">";
 
-    $bdd = new PDO('mysql:host=127.0.0.1;dbname=cafe2;charset=utf8', 'root', '');
 
-    //Interrogation de la base de donnée
-    $reqBDD = $bdd->query('SELECT * FROM `categorie` ');
-    $tableCategorie = $reqBDD->fetchAll();
 
     foreach ($tableCategorie as $enregCategorie) {
     echo "<option value='$enregCategorie[id]'>$enregCategorie[nom]</option>";
@@ -34,7 +30,8 @@ function Vue_AjouterProduit()
     echo "
     </select>
     <br>
-    <input type=\"submit\" name=\"button_envoyer\" value =\"Envoyer\">
+    <input type='hidden' name='case' value='Catalogue'>
+    <button type=\"submit\" name=\"action\" value =\"AjouterProduitBDD\">Ajouter</button>
 </form>
 </body>
 </html>";

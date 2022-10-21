@@ -134,3 +134,20 @@ function Modele_Produit_Supprimer($bdd, $idProduit)
         'id' => $idProduit,
     ));
 }
+
+function Modele_Produit_Ajouer($bdd, $Nom, $Description, $PUHT, $TxTva, $idCategorie)
+{
+    $reqTxt = "
+INSERT INTO `produit`
+    (`nom`, `description`, `PUHT`, `TxTVA`, `idCategorie`) 
+VALUES (:nom, :description, :PUHT, :TxTVA, :idCategorie)
+    ";
+    $reqBDD = $bdd->prepare($reqTxt);
+    $etat = $reqBDD->execute(array(
+        "nom" => $Nom,
+        "description" => $Description,
+        "PUHT" => $PUHT,
+        "TxTVA" => $TxTva,
+        "idCategorie" => $idCategorie,
+    ));
+}

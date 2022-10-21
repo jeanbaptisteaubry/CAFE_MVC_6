@@ -45,7 +45,18 @@ switch ($action) {
         include "./Vue/Vue_Menu.php";
         Vue_Menu();
         include "./Vue/Vue_AjouterProduit.php";
-        Vue_AjouterProduit();
+        $tableCategorie = Modele_Categorie_Selection_Tous($bdd);
+        Vue_AjouterProduit($tableCategorie);
+        break;
+    case "AjouterProduitBDD":
+        Modele_Produit_Ajouer($bdd, $_REQUEST["Nom"], $_REQUEST["Description"], $_REQUEST["PUHT"],
+            $_REQUEST["TxTva"], $_REQUEST["idCategorie"]);
+
+        include "./Vue/Vue_Menu.php";
+        Vue_Menu();
+        $tableProduit = Modele_Produit_SelectTous($bdd);
+        include "./Vue/Vue_ListeProduit.php";
+        Vue_ListeProduit($tableProduit);
         break;
 
 }
