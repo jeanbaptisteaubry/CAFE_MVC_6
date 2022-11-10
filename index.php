@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 include "./Modele/Modele.php";
 
 if(isset($_REQUEST["case"]))

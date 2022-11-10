@@ -130,7 +130,8 @@ echo"
             <tr>  <td>   Ville </td><td> <input type=\"text\" name=\"Ville\"><br></tr>
             <tr>  <td>    Mail contact</td> <td> <input type=\"email\" name=\"mailContact\"></td></tr>
 
-
+            <tr>  <td>    Mot de passe</td> <td> <input type=\"password\" name=\"motDePasse\"></td></tr>
+  
         </table>
             <H3>Gérant de l'entreprise</H3>
             <table>

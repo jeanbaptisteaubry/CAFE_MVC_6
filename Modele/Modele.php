@@ -151,3 +151,44 @@ VALUES (:nom, :description, :PUHT, :TxTVA, :idCategorie)
         "idCategorie" => $idCategorie,
     ));
 }
+
+function Modele_Utilisateur_Creer($bdd, $mail, $motDePasseClair, $typeUtilisateur){
+    $reqTxt = "
+INSERT INTO `utilisateur`( `mail`, `motDePasse`, `typeUtilisateur`) 
+VALUES ( :mail,:motDePasse,:typeUtilisateur)
+    ";
+    $reqBDD = $bdd->prepare($reqTxt);
+    $motDePasseHashe = password_hash($motDePasseClair, PASSWORD_DEFAULT);
+    $etat = $reqBDD->execute(array(
+        "mail" => $mail,
+        "motDePasse" => $motDePasseHashe,
+        "typeUtilisateur" => $typeUtilisateur,
+    ));
+    if($etat == true){
+        $idUtilisateur = $bdd->lastInsertId();
+        return $idUtilisateur;
+    }
+    else
+        return false;
+}
+
+function Modele_Utilisateur_SelectionnerParMail($bdd, $mail){
+    $reqTxt = "
+SELECT * 
+from utilisateur
+where mail = :mail ";
+
+//Paramétrage de la requête
+    $reqBDD = $bdd->prepare($reqTxt);
+    $etat = $reqBDD->execute(array(
+        'mail' => $mail,
+    ));
+    $table = $reqBDD->fetchAll();
+    if(is_array($table)) {
+//Affichage des informations relatives à cette entreprise
+        $utilisateur = $table[0];
+        return $utilisateur;
+    }
+    else
+        return false;
+}
