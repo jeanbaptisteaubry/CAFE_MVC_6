@@ -6,8 +6,8 @@ switch ($action) {
     case "seDeconnecter":
         $_SESSION = null;
         unset($_SESSION);
-        include "./Vue/Vue_Accueil.php";
-        Vue_Afficher_Accueil();
+        include "./Vue/Vue_Accueil_Non_Connecte.php";
+        Vue_Accueil_Non_Connecte();
         break;
     case "ActionParDefaut": //Accueil et action par défaut : afficher une vue !!
         if(isset($_SESSION["utilisateur"]))
@@ -18,8 +18,8 @@ switch ($action) {
             Vue_Accueil_Connecte($_SESSION["utilisateur"]["mail"]);
         }
         else {
-            include "./Vue/Vue_Accueil.php";
-            Vue_Afficher_Accueil();//formulaire où on peut se connecter !!
+            include "./Vue/Vue_Accueil_Non_Connecte.php";
+            Vue_Accueil_Non_Connecte();//formulaire où on peut se connecter !!
 
         }break;
     case "SInscrire":
@@ -53,16 +53,16 @@ switch ($action) {
             }
             else
             {
-                //Mot de passe inconnu !!!
+                //Mot de passe pas bon !!!
                 include "./Vue/Vue_Connexion.php";
-                Vue_Connexion();
+                Vue_Connexion("Mot de passe erroné");
             }
         }
         else
         {
-            //Mot de passe inconnu !!!
+            //Mail inconnu !!!
             include "./Vue/Vue_Connexion.php";
-            Vue_Connexion();
+            Vue_Connexion("Mail inconnu");
         }
         break;
     case "EnvoyerInscription":
@@ -86,18 +86,26 @@ switch ($action) {
                 $lieuNaissanceGerant, $departementNaissanceGerant);
 
             if ($idGerant) {
+                //On crée l'utilisateur associé à l'entreprise
                 Modele_Utilisateur_Creer($bdd, $mailContact, $motDePasseClair, 1);
-                //Parcours des centres d'intérêts
+
+                //Parcours des centres d'intérêts pour les ajouter
                 if (isset($_REQUEST["centre"])) {
                     foreach ($_REQUEST["centre"] as $centre) {
                         Modele_AvoirCentreInteret_Ajouter($bdd, $centre, $idGerant);
                     }
                 }
+                /*
+                //On charge en session le nouvel utilisateur, pour suivre ses actions !!
+                $utilisateur = Modele_Utilisateur_SelectionnerParMail($bdd, $mailContact);
+                $_SESSION["utilisateur"] = $utilisateur;
+                unset($_SESSION["utilisateur"]["motDePAsse"]);
 
+                //Construction de la vue
                 include "./Vue/Vue_Menu.php";
-                Vue_Menu();
-                include "./Vue/Vue_Accueil.php";
-                Vue_Afficher_Accueil();
+                Vue_Menu();*/
+                include "./Vue/Vue_Accueil_Non_Connecte.php";
+                Vue_Accueil_Non_Connecte();
                 include "./Vue/Vue_Remercier.php";
                 Vue_Remercier($mailContact);
 

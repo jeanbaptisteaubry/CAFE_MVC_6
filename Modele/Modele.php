@@ -1,14 +1,15 @@
 <?php
 
-function Modele_CentreInteret_Select_Tous($bdd){
+function Modele_CentreInteret_Select_Tous($bdd)
+{
     $reqBDD = $bdd->query('SELECT * FROM centreinteret');
     $tableCentre = $reqBDD->fetchAll();
     return $tableCentre;
 }
 
 function Modele_Entreprise_Creer($bdd, $denominationSociale, $raisonSociale, $Adresse, $CP,
-                          $Ville, $mailContact, $nomGerant, $prenomGerant, $dateNaissanceGerant,
-                          $lieuNaissanceGerant, $departementNaissanceGerant):int
+                                 $Ville, $mailContact, $nomGerant, $prenomGerant, $dateNaissanceGerant,
+                                 $lieuNaissanceGerant, $departementNaissanceGerant): int
 {
 
     $reqTxt = "
@@ -35,13 +36,13 @@ function Modele_Entreprise_Creer($bdd, $denominationSociale, $raisonSociale, $Ad
         'departement' => $departementNaissanceGerant,
         'dateAcceptationRGPD' => $dateAcceptationRGPD,
     ));
-    if($etat == true){
+    if ($etat == true) {
         $idGerant = $bdd->lastInsertId();
         return $idGerant;
-    }
-    else
+    } else
         return false;
 }
+
 function Modele_AvoirCentreInteret_Ajouter($bdd, $centre, $idGerant)
 {
     $reqTxt = "INSERT INTO `avoir_centreinteret`(`idCI`, `idEntreprise`) 
@@ -56,7 +57,8 @@ function Modele_AvoirCentreInteret_Ajouter($bdd, $centre, $idGerant)
     ));
 }
 
-function Modele_Produit_SelectTous($bdd){
+function Modele_Produit_SelectTous($bdd)
+{
     $reqBDD = $bdd->query('
 SELECT produit.*, categorie.nom as nom_categorie, categorie.description as description_categorie
 FROM produit, categorie
@@ -65,7 +67,7 @@ where produit.idCategorie = categorie.id;');
     return $tableProduit;
 }
 
-function Modele_Produit_Selection_ParId($bdd,$idProduit)
+function Modele_Produit_Selection_ParId($bdd, $idProduit)
 {
 
     $reqTxt = "
@@ -152,7 +154,8 @@ VALUES (:nom, :description, :PUHT, :TxTVA, :idCategorie)
     ));
 }
 
-function Modele_Utilisateur_Creer($bdd, $mail, $motDePasseClair, $typeUtilisateur){
+function Modele_Utilisateur_Creer($bdd, $mail, $motDePasseClair, $typeUtilisateur)
+{
     $reqTxt = "
 INSERT INTO `utilisateur`( `mail`, `motDePasse`, `typeUtilisateur`) 
 VALUES ( :mail,:motDePasse,:typeUtilisateur)
@@ -164,15 +167,15 @@ VALUES ( :mail,:motDePasse,:typeUtilisateur)
         "motDePasse" => $motDePasseHashe,
         "typeUtilisateur" => $typeUtilisateur,
     ));
-    if($etat == true){
+    if ($etat == true) {
         $idUtilisateur = $bdd->lastInsertId();
         return $idUtilisateur;
-    }
-    else
+    } else
         return false;
 }
 
-function Modele_Utilisateur_SelectionnerParMail($bdd, $mail){
+function Modele_Utilisateur_SelectionnerParMail($bdd, $mail)
+{
     $reqTxt = "
 SELECT * 
 from utilisateur
@@ -184,11 +187,13 @@ where mail = :mail ";
         'mail' => $mail,
     ));
     $table = $reqBDD->fetchAll();
-    if(is_array($table)) {
+    if (is_array($table)) {
+        if (count($table) > 0) {
 //Affichage des informations relatives à cette entreprise
-        $utilisateur = $table[0];
-        return $utilisateur;
+            $utilisateur = $table[0];
+            return $utilisateur;
+        }
     }
-    else
-        return false;
+
+    return false;
 }

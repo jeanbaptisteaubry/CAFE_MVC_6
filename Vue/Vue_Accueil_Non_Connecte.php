@@ -1,6 +1,6 @@
 <?php
 
-function Vue_Afficher_Accueil()
+function Vue_Accueil_Non_Connecte()
 {
     echo "
     <form>

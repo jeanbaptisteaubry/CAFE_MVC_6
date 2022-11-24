@@ -1,5 +1,5 @@
 <?php
-function Vue_Connexion()
+function Vue_Connexion($msg = "")
 {
     echo "
     <form>
@@ -18,6 +18,7 @@ function Vue_Connexion()
                 </tr>
              
             </table>
+            $msg
    </form>
    ";
 
