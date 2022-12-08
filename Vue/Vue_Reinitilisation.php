@@ -12,6 +12,10 @@ function Vue_Reinitilisation($msg = "")
                      <td>
                         <button type='submit' name='action' value='validerDemandeReinitialisation'>Réinitialiser MDP</button>
                      </td>
+                 
+                     <td>
+                        <button type='submit' name='action' value='validerDemandeReinitialisationParToken'>Réinitialiser MDP par token</button>
+                     </td>
                 </tr>
             </table>
            <br>

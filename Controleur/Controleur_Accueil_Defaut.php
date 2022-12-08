@@ -8,6 +8,48 @@ switch ($action) {
         include "Vue/Vue_Reinitilisation.php";
         Vue_Reinitilisation();
         break;
+    case "validerDemandeReinitialisationParToken":
+        include "Vue/Vue_Reinitilisation.php";
+
+        $octetsAleatoires = openssl_random_pseudo_bytes (256) ;
+        $valeurToken = sodium_bin2base64($octetsAleatoires, SODIUM_BASE64_VARIANT_ORIGINAL);
+
+
+        //On va recherche l'utilisateur pour savoir s'il existe
+        $utilisateur = Modele_Utilisateur_SelectionnerParMail($bdd, $_REQUEST["email"]);
+        if($utilisateur != null) {
+
+//Obligatoire pour avoir l’objet phpmailer qui marche
+            $mail = new PHPMailer;
+            $mail->isSMTP();
+            $mail->Host = '127.0.0.1';
+            $mail->Port = 1025; //Port non crypté
+            $mail->SMTPAuth = false; //Pas d’authentification
+            $mail->SMTPAutoTLS = false; //Pas de certificat TLS
+            $mail->setFrom('test@labruleriecomtoise.fr', 'admin');
+            $mail->addAddress($_REQUEST["email"], $_REQUEST["email"]);
+            if ($mail->addReplyTo('test@labruleriecomtoise.fr', 'admin')) {
+                $mail->Subject = 'Objet : Nouveau MDP';
+                $mail->isHTML(true);
+
+                $lien = "<a href='http://localhost:63342/CAFE_MVC_2/index.php?action=token&valeurToken=$valeurToken'>cliquer sur ce lien</a>";
+                //Attention, en cas de redémarrage de phpstorm le port (ici 63342 peut/va changer)
+                $mail->Body = "Cliquez sur ce lien : $lien";
+                if (!$mail->send()) {
+
+                    $msg = 'Désolé, quelque chose a mal tourné. Veuillez réessayer plus tard.' . $mail->ErrorInfo;
+                } else {
+                    $msg = 'Message envoyé ! Merci de nous avoir contactés.';
+                }
+            } else {
+                $msg = 'Il doit manquer qqc !';
+            }
+        }
+        else
+            $msg = "";
+        Vue_Reinitilisation("La demande pour $_REQUEST[email] a été prise en compte. $msg");
+
+        break;
     case "validerDemandeReinitialisation":
         include "Vue/Vue_Reinitilisation.php";
         $nouveauMdp = GenereMotDePasse(10);

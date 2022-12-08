@@ -210,3 +210,18 @@ where mail = :mail ";
 
     return false;
 }
+
+function Modele_Jeton_Creation($bdd, $valeurUnique, $idUtilisateur, $idUsage, $idObjet = -1)
+{
+
+}
+
+function Modele_Jeton_Recherche($bdd, $valeurUnique)
+{
+
+}
+
+function Modele_Jeton_Supprimer($bdd, $idJeton)
+{
+
+}
