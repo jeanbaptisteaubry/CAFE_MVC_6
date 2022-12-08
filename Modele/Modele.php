@@ -153,7 +153,20 @@ VALUES (:nom, :description, :PUHT, :TxTVA, :idCategorie)
         "idCategorie" => $idCategorie,
     ));
 }
+function Modele_Utilisateur_ChangerMdp($bdd, $idUtilisateur, $motDePasseClair){
+    $reqTxt  = "UPDATE `utilisateur`
+                SET `motDePasse` = :paramMotDePasse
+                WHERE id = :paramId";
 
+    $reqBDD = $bdd->prepare($reqTxt);
+    $motDePasseHashe = password_hash($motDePasseClair, PASSWORD_DEFAULT);
+    $etat = $reqBDD->execute(array(
+        "paramId" => $idUtilisateur,
+        "paramMotDePasse" => $motDePasseHashe
+    ));
+
+    return $etat;
+}
 function Modele_Utilisateur_Creer($bdd, $mail, $motDePasseClair, $typeUtilisateur)
 {
     $reqTxt = "

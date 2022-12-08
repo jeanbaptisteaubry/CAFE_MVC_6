@@ -118,7 +118,7 @@ echo"
     </head>
     <body>
         <H1>Demande d'inscription d'une entreprise</H1>
-       
+       <p>$msg</p>
         <form action='index.php' >
             <H3>Information de l'entreprise</H3>
         <table>
@@ -181,11 +181,13 @@ echo"
                     </td></tr>
                 <tr> <td> Acceptation RGPD </td>
                     <td> J'accepte les conditions : <input type=\"checkbox\" name=\"RGPD\" value=\"RGPDOK\"> OUI 
-                    $msg </td></tr>
+                     </td></tr>
                 <tr>    <td>   <button type=\"submit\" name='action' value='EnvoyerInscription'>Envoyer</button></td></tr>
             </table>
+            
             <input type='hidden' name='case' value='Accueil'>
         </form>
+            
     </body>
 </html>";
 }

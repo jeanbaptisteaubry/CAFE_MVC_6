@@ -1,8 +1,48 @@
 <?php
-
+use PHPMailer\PHPMailer\PHPMailer;
 include "./Vue/Vue_Structure_EnTete.php";
+include "./fonction/motdepasse.php";
 Vue_Structure_EnTete();
 switch ($action) {
+    case "demandeReinitialisation":
+        include "Vue/Vue_Reinitilisation.php";
+        Vue_Reinitilisation();
+        break;
+    case "validerDemandeReinitialisation":
+        include "Vue/Vue_Reinitilisation.php";
+        $nouveauMdp = GenereMotDePasse(10);
+
+        //On va recherche l'utilisateur pour savoir s'il existe
+        $utilisateur = Modele_Utilisateur_SelectionnerParMail($bdd, $_REQUEST["email"]);
+        if($utilisateur != null) {
+
+//Obligatoire pour avoir l’objet phpmailer qui marche
+            $mail = new PHPMailer;
+            $mail->isSMTP();
+            $mail->Host = '127.0.0.1';
+            $mail->Port = 1025; //Port non crypté
+            $mail->SMTPAuth = false; //Pas d’authentification
+            $mail->SMTPAutoTLS = false; //Pas de certificat TLS
+            $mail->setFrom('test@labruleriecomtoise.fr', 'admin');
+            $mail->addAddress($_REQUEST["email"], $_REQUEST["email"]);
+            if ($mail->addReplyTo('test@labruleriecomtoise.fr', 'admin')) {
+                $mail->Subject = 'Objet : Nouveau MDP';
+                $mail->isHTML(false);
+                $mail->Body = "Voici votre nouveau mdp : " . $nouveauMdp;
+                if (!$mail->send()) {
+
+                    $msg = 'Désolé, quelque chose a mal tourné. Veuillez réessayer plus tard.' . $mail->ErrorInfo;
+                } else {
+                    $msg = 'Message envoyé ! Merci de nous avoir contactés.';
+                }
+            } else {
+                $msg = 'Il doit manquer qqc !';
+            }
+        }
+        else
+            $msg = "";
+        Vue_Reinitilisation("La demande pour $_REQUEST[email] a été prise en compte. $msg");
+        break;
     case "seDeconnecter":
         $_SESSION = null;
         unset($_SESSION);
@@ -49,7 +89,7 @@ switch ($action) {
                 include "./Vue/Vue_Menu.php";
                 Vue_Menu();
                 include "./Vue/Vue_Accueil_Connecte.php";
-                Vue_Accueil_Connecte($utilisateur["mail"]);
+                Vue_Accueil_Connecte($_SESSION["utilisateur"]["mail"]);
             }
             else
             {
@@ -67,51 +107,52 @@ switch ($action) {
         break;
     case "EnvoyerInscription":
         if (isset($_REQUEST["RGPD"])) {
+            if(calculeComplexiteMDP($_REQUEST["motDePasse"])>= 80) {
 //Association d'une variable PHP à chaque variable issue de la demande (REQUEST) Http
-            $denominationSociale = $_REQUEST["denominationSociale"];
-            $raisonSociale = $_REQUEST["raisonSociale"];
-            $Adresse = $_REQUEST["Adresse"];
-            $CP = $_REQUEST["CP"];
-            $Ville = $_REQUEST["Ville"];
-            $mailContact = $_REQUEST["mailContact"];
-            $nomGerant = $_REQUEST["nomGerant"];
-            $motDePasseClair = $_REQUEST["motDePasse"];
-            $prenomGerant = $_REQUEST["prenomGerant"];
-            $dateNaissanceGerant = $_REQUEST["dateNaissanceGerant"];
-            $lieuNaissanceGerant = $_REQUEST["lieuNaissanceGerant"];
-            $departementNaissanceGerant = $_REQUEST["departementNaissanceGerant"];
+                $denominationSociale = $_REQUEST["denominationSociale"];
+                $raisonSociale = $_REQUEST["raisonSociale"];
+                $Adresse = $_REQUEST["Adresse"];
+                $CP = $_REQUEST["CP"];
+                $Ville = $_REQUEST["Ville"];
+                $mailContact = $_REQUEST["mailContact"];
+                $nomGerant = $_REQUEST["nomGerant"];
+                $motDePasseClair = $_REQUEST["motDePasse"];
+                $prenomGerant = $_REQUEST["prenomGerant"];
+                $dateNaissanceGerant = $_REQUEST["dateNaissanceGerant"];
+                $lieuNaissanceGerant = $_REQUEST["lieuNaissanceGerant"];
+                $departementNaissanceGerant = $_REQUEST["departementNaissanceGerant"];
 
-            $idGerant = Modele_Entreprise_Creer($bdd, $denominationSociale, $raisonSociale, $Adresse, $CP,
-                $Ville, $mailContact, $nomGerant, $prenomGerant, $dateNaissanceGerant,
-                $lieuNaissanceGerant, $departementNaissanceGerant);
+                $idGerant = Modele_Entreprise_Creer($bdd, $denominationSociale, $raisonSociale, $Adresse, $CP,
+                    $Ville, $mailContact, $nomGerant, $prenomGerant, $dateNaissanceGerant,
+                    $lieuNaissanceGerant, $departementNaissanceGerant);
 
-            if ($idGerant) {
-                //On crée l'utilisateur associé à l'entreprise
-                Modele_Utilisateur_Creer($bdd, $mailContact, $motDePasseClair, 1);
+                if ($idGerant) {
+                    //On crée l'utilisateur associé à l'entreprise
+                    Modele_Utilisateur_Creer($bdd, $mailContact, $motDePasseClair, 1);
 
-                //Parcours des centres d'intérêts pour les ajouter
-                if (isset($_REQUEST["centre"])) {
-                    foreach ($_REQUEST["centre"] as $centre) {
-                        Modele_AvoirCentreInteret_Ajouter($bdd, $centre, $idGerant);
+                    //Parcours des centres d'intérêts pour les ajouter
+                    if (isset($_REQUEST["centre"])) {
+                        foreach ($_REQUEST["centre"] as $centre) {
+                            Modele_AvoirCentreInteret_Ajouter($bdd, $centre, $idGerant);
+                        }
                     }
+
+                    include "./Vue/Vue_Accueil_Non_Connecte.php";
+                    Vue_Accueil_Non_Connecte();
+                    include "./Vue/Vue_Remercier.php";
+                    Vue_Remercier($mailContact);
+
+
+                } else {
+                    //   echo 'archtung !!';
                 }
-                /*
-                //On charge en session le nouvel utilisateur, pour suivre ses actions !!
-                $utilisateur = Modele_Utilisateur_SelectionnerParMail($bdd, $mailContact);
-                $_SESSION["utilisateur"] = $utilisateur;
-                unset($_SESSION["utilisateur"]["motDePAsse"]);
-
-                //Construction de la vue
-                include "./Vue/Vue_Menu.php";
-                Vue_Menu();*/
-                include "./Vue/Vue_Accueil_Non_Connecte.php";
-                Vue_Accueil_Non_Connecte();
-                include "./Vue/Vue_Remercier.php";
-                Vue_Remercier($mailContact);
-
-
-            } else {
-                //   echo 'archtung !!';
+            }
+            else
+            {
+                //Complexité pas suffisante
+                include "./Vue/Vue_SInscrire.php";
+                $tableCentreDInteret = Modele_CentreInteret_Select_Tous($bdd);
+                Vue_SInscrire($tableCentreDInteret, 'Mot de passe pas assez complexe !');
             }
         } else {
             include "./Vue/Vue_SInscrire.php";
@@ -119,6 +160,17 @@ switch ($action) {
             Vue_SInscrire($tableCentreDInteret, 'RGPD pas acceptée !');
         }
         break;
+    case "demandeChangerMotDePasse":
+            include "./Vue/Vue_Menu.php";
+            Vue_Menu();
+            include "./Vue/Vue_ChangerMotDePasse.php";
+            Vue_ChangerMotDePasse();
+        break;
+    case "actionChangerMotDePasse":
+            include "./Vue/Vue_Menu.php";
+            Vue_Menu();
+        break ;
+
 }
 
 include "./Vue/Vue_Structure_BasDePage.php";

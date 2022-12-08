@@ -13,13 +13,17 @@ function Vue_Connexion($msg = "")
                  </tr>
                  <tr>
                      <td>
+                        <button type='submit' name='action' value='demandeReinitialisation'>Réinitialiser MDP</button>
+                     </td>
+                     <td>
                         <button type='submit' name='action' value='login'>Me connecter</button>
                     </td>
                 </tr>
              
             </table>
-            $msg
-   </form>
+           <br>
+            <p>$msg</p>
+               </form>
    ";
 
 

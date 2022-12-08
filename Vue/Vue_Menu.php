@@ -29,6 +29,12 @@ function Vue_Menu(){
                 <button type='submit' name='action' value='seDeconnecter'>Se déconnecter</button>
             </form> 
         </li>
+        <li>
+            <form>
+                <input type='hidden' name='case' value='Accueil'>
+                <button type='submit' name='action' value='demandeChangerMotDePasse'>Changer MDP</button>
+            </form> 
+        </li>
     </ul>
   </nav>
     ";
