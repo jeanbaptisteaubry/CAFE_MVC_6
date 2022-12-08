@@ -38,7 +38,10 @@ switch ($action) {
                   include_once "./Vue/Vue_ChangerMotDePasseToken.php";
                   Vue_ChangerMotDePasseToken();
                   Modele_Jeton_Supprimer($bdd,$token["id"] );
-
+                    /*
+                     * c. Ajouter une info à $_SESSION["utilisateur"] pour savoir si l'utilisateur doit changer son mdp
+                     *
+                     */
                   break;
               case 2:
                   break;
@@ -62,10 +65,10 @@ switch ($action) {
         }
         break;
     case "validerDemandeReinitialisationParToken":
+        /* a. Avant de continuer,
+        vérifier si on n'est pas dans une situation d'abus **/
+
         include "Vue/Vue_Reinitilisation.php";
-
-
-
         //On va recherche l'utilisateur pour savoir s'il existe
         $utilisateur = Modele_Utilisateur_SelectionnerParMail($bdd, $_REQUEST["email"]);
         if($utilisateur != null) {
