@@ -10,6 +10,9 @@
     }
   ],
   "require": {
-    "phpmailer/phpmailer": "*"
+    "phpmailer/phpmailer": "*",
+    "ext-pdo": "*",
+    "ext-openssl": "*",
+    "ext-sodium": "*"
   }
 }

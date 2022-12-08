@@ -187,6 +187,31 @@ VALUES ( :mail,:motDePasse,:typeUtilisateur)
         return false;
 }
 
+
+function Modele_Utilisateur_SelectionnerParId($bdd, $id)
+{
+    $reqTxt = "
+SELECT * 
+from utilisateur
+where id = :id ";
+
+//Paramétrage de la requête
+    $reqBDD = $bdd->prepare($reqTxt);
+    $etat = $reqBDD->execute(array(
+        'id' => $id,
+    ));
+    $table = $reqBDD->fetchAll();
+    if (is_array($table)) {
+        if (count($table) > 0) {
+//Affichage des informations relatives à cette entreprise
+            $utilisateur = $table[0];
+            return $utilisateur;
+        }
+    }
+
+    return false;
+}
+
 function Modele_Utilisateur_SelectionnerParMail($bdd, $mail)
 {
     $reqTxt = "
@@ -213,15 +238,60 @@ where mail = :mail ";
 
 function Modele_Jeton_Creation($bdd, $valeurUnique, $idUtilisateur, $idUsage, $idObjet = -1)
 {
+    $reqTxt = "
+INSERT INTO `jeton`(  `valeurUnique`, `idUtilisateur`, `idUsage`, `idObjet`) 
+VALUES ( :valeurUnique,:idUtilisateur,:idUsage,:idObjet)
+    ";
+    $reqBDD = $bdd->prepare($reqTxt);
 
+    $etat = $reqBDD->execute(array(
+        "valeurUnique" => $valeurUnique,
+        "idUtilisateur" => $idUtilisateur,
+        "idUsage" => $idUsage,
+        "idObjet" => $idObjet,
+    ));
+    if ($etat == true) {
+        $idJeton = $bdd->lastInsertId();
+        return $idJeton;
+    } else
+        return false;
 }
 
 function Modele_Jeton_Recherche($bdd, $valeurUnique)
 {
+    $reqTxt = "
+SELECT * 
+from jeton
+where valeurUnique = :valeurUnique ";
 
+//Paramétrage de la requête
+    $reqBDD = $bdd->prepare($reqTxt);
+    $etat = $reqBDD->execute(array(
+        'valeurUnique' => $valeurUnique,
+    ));
+    $table = $reqBDD->fetchAll();
+    if (is_array($table)) {
+        if (count($table) > 0) {
+//Affichage des informations relatives à cette entreprise
+            $jeton = $table[0];
+            return $jeton;
+        }
+    }
+
+    return false;
 }
 
 function Modele_Jeton_Supprimer($bdd, $idJeton)
 {
+    $reqTxt = "
+delete jeton.* 
+from jeton
+where id = :idJeton ";
 
+//Paramétrage de la requête
+    $reqBDD = $bdd->prepare($reqTxt);
+    $etat = $reqBDD->execute(array(
+        'idJeton' => $idJeton,
+    ));
+    return $etat;
 }

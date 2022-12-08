@@ -8,16 +8,73 @@ switch ($action) {
         include "Vue/Vue_Reinitilisation.php";
         Vue_Reinitilisation();
         break;
+    case "actionChangerMotDePasseToken":
+        if($_REQUEST["motDePasse"] == $_REQUEST["confirmationMotDePasse"])
+        {
+            Modele_Utilisateur_ChangerMdp($bdd,$_SESSION["utilisateur"]["id"], $_REQUEST["motDePasse"]);
+            include "./Vue/Vue_Menu.php";
+            Vue_Menu();
+            include "./Vue/Vue_Accueil_Connecte.php";
+            Vue_Accueil_Connecte($_SESSION["utilisateur"]["mail"]);
+        }
+        else
+        {
+            include "Vue/Vue_Reinitilisation.php";
+            Vue_Reinitilisation("Confirmation erronée");
+        }
+
+
+        break;
+    case "token":
+        //echo $_REQUEST["valeurToken"];
+        $token = Modele_Jeton_Recherche($bdd, $_REQUEST["valeurToken"]);
+        if($token != false)
+        {
+          switch($token["idUsage"]){
+              case 1 :
+                  $utilisateur = Modele_Utilisateur_SelectionnerParId($bdd, $token["idUtilisateur"]);
+                  $_SESSION["utilisateur"] = $utilisateur;
+                  unset($_SESSION["utilisateur"]["motDePAsse"]);
+                  include_once "./Vue/Vue_ChangerMotDePasseToken.php";
+                  Vue_ChangerMotDePasseToken();
+                  Modele_Jeton_Supprimer($bdd,$token["id"] );
+
+                  break;
+              case 2:
+                  break;
+          }
+        }
+        else
+        {
+            //Token invalide, on le renvoie sur l'action par défaut..
+            if(isset($_SESSION["utilisateur"]))
+            {
+                include "./Vue/Vue_Menu.php";
+                Vue_Menu();
+                include "./Vue/Vue_Accueil_Connecte.php";
+                Vue_Accueil_Connecte($_SESSION["utilisateur"]["mail"]);
+            }
+            else {
+                include "./Vue/Vue_Accueil_Non_Connecte.php";
+                Vue_Accueil_Non_Connecte();//formulaire où on peut se connecter !!
+
+            }
+        }
+        break;
     case "validerDemandeReinitialisationParToken":
         include "Vue/Vue_Reinitilisation.php";
 
-        $octetsAleatoires = openssl_random_pseudo_bytes (256) ;
-        $valeurToken = sodium_bin2base64($octetsAleatoires, SODIUM_BASE64_VARIANT_ORIGINAL);
 
 
         //On va recherche l'utilisateur pour savoir s'il existe
         $utilisateur = Modele_Utilisateur_SelectionnerParMail($bdd, $_REQUEST["email"]);
         if($utilisateur != null) {
+
+            $octetsAleatoires = openssl_random_pseudo_bytes (256) ;
+            $valeurToken = sodium_bin2base64($octetsAleatoires, SODIUM_BASE64_VARIANT_ORIGINAL);
+
+            Modele_Jeton_Creation($bdd,$valeurToken,$utilisateur["id"],1);
+
 
 //Obligatoire pour avoir l’objet phpmailer qui marche
             $mail = new PHPMailer;
@@ -32,7 +89,7 @@ switch ($action) {
                 $mail->Subject = 'Objet : Nouveau MDP';
                 $mail->isHTML(true);
 
-                $lien = "<a href='http://localhost:63342/CAFE_MVC_2/index.php?action=token&valeurToken=$valeurToken'>cliquer sur ce lien</a>";
+                $lien = "<a href='http://localhost:63342/CAFE_MVC_2/index.php?action=token&valeurToken=".urlencode($valeurToken)."'>cliquer sur ce lien</a>";
                 //Attention, en cas de redémarrage de phpstorm le port (ici 63342 peut/va changer)
                 $mail->Body = "Cliquez sur ce lien : $lien";
                 if (!$mail->send()) {
@@ -103,7 +160,8 @@ switch ($action) {
             include "./Vue/Vue_Accueil_Non_Connecte.php";
             Vue_Accueil_Non_Connecte();//formulaire où on peut se connecter !!
 
-        }break;
+        }
+        break;
     case "SInscrire":
         include "./Vue/Vue_SInscrire.php";
         $tableCentreDInteret = Modele_CentreInteret_Select_Tous($bdd);
