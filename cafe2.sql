@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 24 nov. 2022 à 13:48
+-- Généré le : jeu. 08 déc. 2022 à 16:50
 -- Version du serveur : 10.4.22-MariaDB
 -- Version de PHP : 8.1.2
 
@@ -163,6 +163,27 @@ INSERT INTO `entreprise` (`id`, `denominationSociale`, `raisonSociale`, `Adresse
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `jeton`
+--
+
+CREATE TABLE `jeton` (
+  `id` int(11) NOT NULL,
+  `valeurUnique` text NOT NULL,
+  `idUtilisateur` int(11) NOT NULL,
+  `idUsage` int(11) NOT NULL,
+  `idObjet` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `jeton`
+--
+
+INSERT INTO `jeton` (`id`, `valeurUnique`, `idUtilisateur`, `idUsage`, `idObjet`) VALUES
+(9, 'RjpzBu4mJhG0xVY6KWuBG/DkC3zKBpjupjPImr2wJE8T7wvgt5d8ZSXlG9iDnvgINj7hOz7xfHIcsGEsnaCpOJCz1h3uFR1Qsdx03YEo5hdym2n7jjPW539uqVG2GZkDl/k1YOnofbIBG65p1OQAUsFDed1Nhxz8zrCoxS4nlnNvT5F2jWiBuzv6A5tolSo/u6YK42TN8J0IHM+tHvgmrGe18KVd8uttkRC+VtgA6fzKFjmrmcCZPaX96Yx7IC3Kh21PGY2ffJirXbNkeAqt6vnTY24cVVuNGrg++cM7cMs/FkNZXDtM5RudzzcDvD1eiyXQmGb602Quvl2Khv8ZWA==', 5, 1, -1);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `produit`
 --
 
@@ -190,6 +211,24 @@ INSERT INTO `produit` (`id`, `nom`, `description`, `PUHT`, `TxTVA`, `idCategorie
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `usage_jeton`
+--
+
+CREATE TABLE `usage_jeton` (
+  `id` int(11) NOT NULL,
+  `type` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `usage_jeton`
+--
+
+INSERT INTO `usage_jeton` (`id`, `type`) VALUES
+(1, 'renouveler MDP');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `utilisateur`
 --
 
@@ -205,7 +244,7 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `mail`, `motDePasse`, `typeUtilisateur`) VALUES
-(5, 'JBA@CLIENT.fr', '$2y$10$DUu56o0AnQL5x0XiAKQWAOLU7q6I1GkJcUvC4DgJPuCTUveMWGnR6', 1),
+(5, 'JBA@CLIENT.fr', '$2y$10$8oyzQkQ8KS9KMJSYcKqYuu/bnpbpMMG8cNsZH7SdlHtRDQsIz8zti', 1),
 (6, 'JBA@CLIENT.fr', '$2y$10$bPOmPeZm9g1lGj6NolcyVetN6bYXbH5EWzdb/BViKNe4s5nf9T3ju', 1);
 
 --
@@ -237,9 +276,21 @@ ALTER TABLE `entreprise`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `jeton`
+--
+ALTER TABLE `jeton`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `produit`
 --
 ALTER TABLE `produit`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `usage_jeton`
+--
+ALTER TABLE `usage_jeton`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -271,10 +322,22 @@ ALTER TABLE `entreprise`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
+-- AUTO_INCREMENT pour la table `jeton`
+--
+ALTER TABLE `jeton`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- AUTO_INCREMENT pour la table `produit`
 --
 ALTER TABLE `produit`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT pour la table `usage_jeton`
+--
+ALTER TABLE `usage_jeton`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
