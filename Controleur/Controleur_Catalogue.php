@@ -1,5 +1,7 @@
 <?php
 
+use App\Utilitaire\Singleton_Logger;
+
 include "./Vue/Vue_Structure_EnTete.php";
 Vue_Structure_EnTete();
 switch ($action) {
@@ -14,7 +16,7 @@ switch ($action) {
         include "./Vue/Vue_Menu.php";
         Vue_Menu();
         include "./Vue/Vue_AfficherProduit.php";
-        $produit = Modele_Produit_Selection_ParId($bdd,  $_REQUEST["idProduit"]);
+        $produit = Modele_Produit_Selection_ParUuid($bdd,  $_REQUEST["uuidProduit"]);
         $tableCategorie = Modele_Categorie_Selection_Tous($bdd);
         Vue_AfficherProduit($produit, $tableCategorie);
         break;
@@ -30,7 +32,10 @@ switch ($action) {
         Vue_AfficherProduit($produit, $tableCategorie);
         break;
     case "SupprimerProduit":
-        Modele_Produit_Supprimer($bdd, $_REQUEST["idProduit"]);
+        $produit = Modele_Produit_Selection_ParUuid($bdd,  $_REQUEST["uuidProduit"]);
+
+        ModeleLog_Ajouter_Action($bddLog, $_SESSION["utilisateur"]["id"],1,$produit["uuidProduit"]);
+        Modele_Produit_Supprimer($bdd, $produit["uuidProduit"]);
 
         include "./Vue/Vue_Menu.php";
         Vue_Menu();
@@ -57,6 +62,9 @@ switch ($action) {
         $tableProduit = Modele_Produit_SelectTous($bdd);
         include "./Vue/Vue_ListeProduit.php";
         Vue_ListeProduit($tableProduit);
+        break;
+    default :
+        Singleton_Logger::getInstance()->alert("Accès au default impossible !!" );
         break;
 
 }

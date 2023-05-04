@@ -67,6 +67,28 @@ where produit.idCategorie = categorie.id;');
     return $tableProduit;
 }
 
+function Modele_Produit_Selection_ParUuid($bdd, $uuidProduit)
+{
+
+    $reqTxt = "
+SELECT produit.*, categorie.nom as nom_categorie,
+       categorie.description as description_categorie
+FROM produit, categorie
+where produit.idCategorie = categorie.id
+and produit.uuid = :uuid ";
+
+//Paramétrage de la requête
+    $reqBDD = $bdd->prepare($reqTxt);
+    $etat = $reqBDD->execute(array(
+        'uuid' => $uuidProduit,
+    ));
+    $table = $reqBDD->fetchAll();
+
+//Affichage des informations relatives à cette entreprise
+    $produit = $table[0];
+    return $produit;
+}
+
 function Modele_Produit_Selection_ParId($bdd, $idProduit)
 {
 

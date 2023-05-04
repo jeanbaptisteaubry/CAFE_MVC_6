@@ -1,4 +1,6 @@
 <?php
+
+use App\Utilitaire\Singleton_Logger;
 use PHPMailer\PHPMailer\PHPMailer;
 include "./Vue/Vue_Structure_EnTete.php";
 include "./fonction/motdepasse.php";
@@ -32,6 +34,8 @@ switch ($action) {
         {
           switch($token["idUsage"]){
               case 1 :
+                  Singleton_Logger::getInstance()->notice("Consommation token nouveau mdp token $_REQUEST[valeurToken] $token[idUtilisateur]" );
+
                   $utilisateur = Modele_Utilisateur_SelectionnerParId($bdd, $token["idUtilisateur"]);
                   $_SESSION["utilisateur"] = $utilisateur;
                   unset($_SESSION["utilisateur"]["motDePAsse"]);
@@ -67,6 +71,7 @@ switch ($action) {
     case "validerDemandeReinitialisationParToken":
         /* a. Avant de continuer,
         vérifier si on n'est pas dans une situation d'abus **/
+        Singleton_Logger::getInstance()->notice("Demande nouveau mdp token $_REQUEST[email]" );
 
         include "Vue/Vue_Reinitilisation.php";
         //On va recherche l'utilisateur pour savoir s'il existe
@@ -85,7 +90,7 @@ switch ($action) {
             $mail->Host = '127.0.0.1';
             $mail->Port = 1025; //Port non crypté
             $mail->SMTPAuth = false; //Pas d’authentification
-            $mail->SMTPAutoTLS = false; //Pas de certificat TLS
+            $mail->SMTPAutoTLS = false; //Pas de certificat tls
             $mail->setFrom('test@labruleriecomtoise.fr', 'admin');
             $mail->addAddress($_REQUEST["email"], $_REQUEST["email"]);
             if ($mail->addReplyTo('test@labruleriecomtoise.fr', 'admin')) {
@@ -111,6 +116,8 @@ switch ($action) {
 
         break;
     case "validerDemandeReinitialisation":
+        Singleton_Logger::getInstance()->notice("Demande nouveau mdp $_SESSION[utilisateur]" );
+
         include "Vue/Vue_Reinitilisation.php";
         $nouveauMdp = GenereMotDePasse(10);
 
@@ -124,7 +131,7 @@ switch ($action) {
             $mail->Host = '127.0.0.1';
             $mail->Port = 1025; //Port non crypté
             $mail->SMTPAuth = false; //Pas d’authentification
-            $mail->SMTPAutoTLS = false; //Pas de certificat TLS
+            $mail->SMTPAutoTLS = false; //Pas de certificat tls
             $mail->setFrom('test@labruleriecomtoise.fr', 'admin');
             $mail->addAddress($_REQUEST["email"], $_REQUEST["email"]);
             if ($mail->addReplyTo('test@labruleriecomtoise.fr', 'admin')) {
@@ -146,6 +153,7 @@ switch ($action) {
         Vue_Reinitilisation("La demande pour $_REQUEST[email] a été prise en compte. $msg");
         break;
     case "seDeconnecter":
+        Singleton_Logger::getInstance()->notice("Déconnexion $_SESSION[utilisateur]" );
         $_SESSION = null;
         unset($_SESSION);
         include "./Vue/Vue_Accueil_Non_Connecte.php";
@@ -183,6 +191,7 @@ switch ($action) {
             //Utilisateur connu, on va checke si le mdp est bon !!!
             if(password_verify($_REQUEST["motDePasse"], $utilisateur["motDePasse"]))
             {
+                Singleton_Logger::getInstance()->notice("Connexion réussie : $utilisateur" );
                 //on stocke l'utilisateur en session
                 $_SESSION["utilisateur"] = $utilisateur;
                 unset($_SESSION["utilisateur"]["motDePAsse"]); //on détruit le mot de passe hashé en mémoire
@@ -196,6 +205,8 @@ switch ($action) {
             }
             else
             {
+                Singleton_Logger::getInstance()->notice("Connexion erronée : $_REQUEST[email] : erreur mdp" );
+
                 //Mot de passe pas bon !!!
                 include "./Vue/Vue_Connexion.php";
                 Vue_Connexion("Mot de passe erroné");
@@ -203,6 +214,7 @@ switch ($action) {
         }
         else
         {
+            Singleton_Logger::getInstance()->notice("Connexion erronée : $_REQUEST[email] : mail inconnu" );
             //Mail inconnu !!!
             include "./Vue/Vue_Connexion.php";
             Vue_Connexion("Mail inconnu");
@@ -211,6 +223,7 @@ switch ($action) {
     case "EnvoyerInscription":
         if (isset($_REQUEST["RGPD"])) {
             if(calculeComplexiteMDP($_REQUEST["motDePasse"])>= 80) {
+                Singleton_Logger::getInstance()->notice("Ajout d'un nouveau client ... la liste des infos !!" );
 //Association d'une variable PHP à chaque variable issue de la demande (REQUEST) Http
                 $denominationSociale = $_REQUEST["denominationSociale"];
                 $raisonSociale = $_REQUEST["raisonSociale"];
@@ -272,7 +285,11 @@ switch ($action) {
     case "actionChangerMotDePasse":
             include "./Vue/Vue_Menu.php";
             Vue_Menu();
+        Singleton_Logger::getInstance()->notice("Chagnement de mot de passe" );
         break ;
+    default :
+        Singleton_Logger::getInstance()->alert("Accès au default impossible !!" );
+        break;
 
 }
 

@@ -8,7 +8,7 @@ $mail->isSMTP();
 $mail->Host = '127.0.0.1';
 $mail->Port = 1025; //Port non crypté
 $mail->SMTPAuth = false; //Pas d’authentification
-$mail->SMTPAutoTLS = false; //Pas de certificat TLS
+$mail->SMTPAutoTLS = false; //Pas de certificat tls
 $mail->setFrom('test@labruleriecomtoise.fr', 'admin');
 $mail->addAddress('client@labruleriecomtoise.fr', 'Mon client');
 if ($mail->addReplyTo('test@labruleriecomtoise.fr', 'admin'))

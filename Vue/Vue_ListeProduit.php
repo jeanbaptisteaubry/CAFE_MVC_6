@@ -25,14 +25,14 @@ function Vue_ListeProduit($tableProduit)
         <td>
             <form>
                 <input type='hidden' name='case' value='Catalogue'>
-                <input type='hidden' name='idProduit' value='$enregProduit[id]'>
+                <input type='hidden' name='uuidProduit' value='$enregProduit[uuid]'>
                 <button type='submit' name='action' value='AfficherProduit'>Ouvrir</button>
             </form>
         </td>
         <td>
             <form>
                 <input type='hidden' name='case' value='Catalogue'>
-                <input type='hidden' name='idProduit' value='$enregProduit[id]'>
+                <input type='hidden' name='uuidProduit' value='$enregProduit[uuid]'>
                 <button type='submit' name='action' value='SupprimerProduit'>Supprimer</button>
             </form>
         </td>
